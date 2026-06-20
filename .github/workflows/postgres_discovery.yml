@@ -1,0 +1,38 @@
+name: PostgreSQL Windows Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  postgres:
+    runs-on: windows-2022
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize PostgreSQL
+        shell: powershell
+        run: .\scripts\postgres-init.ps1
+
+      - name: Verify PostgreSQL
+        shell: powershell
+        run: .\scripts\postgres-verify.ps1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run application
+        env:
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_PORT: 5433
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: my_db
+        run: python postgres.py
