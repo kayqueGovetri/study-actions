@@ -1,0 +1,56 @@
+name: Windows Integration Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Start PostgreSQL
+        run: |
+          docker run -d `
+            --name postgres `
+            -e POSTGRES_PASSWORD=postgres `
+            -e POSTGRES_DB=testdb `
+            -p 5432:5432 `
+            postgres:17
+
+      - name: Start MySQL
+        run: |
+          docker run -d `
+            --name mysql `
+            -e MYSQL_ROOT_PASSWORD=root `
+            -e MYSQL_DATABASE=testdb `
+            -p 3306:3306 `
+            mysql:9
+
+      - name: Start MongoDB
+        run: |
+          docker run -d `
+            --name mongo `
+            -p 27017:27017 `
+            mongo:8
+
+      - name: Wait for databases
+        run: |
+          Start-Sleep -Seconds 30
+
+      - name: Show containers
+        run: docker ps
+
+      - name: Show logs on failure
+        if: failure()
+        run: |
+          docker logs postgres
+          docker logs mysql
+          docker logs mongo
