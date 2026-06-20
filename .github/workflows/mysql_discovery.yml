@@ -1,0 +1,39 @@
+name: MySQL Server Discovery
+
+on:
+  workflow_dispatch:
+
+jobs:
+  mysql:
+    runs-on: windows-2022
+
+    steps:
+      - name: Find mysqld
+        shell: powershell
+        run: |
+          where.exe mysqld
+
+      - name: Inspect MySQL folder
+        shell: powershell
+        run: |
+          Get-ChildItem "C:\Program Files\MySQL\MySQL Server 8.0\bin"
+
+      - name: Find my.ini
+        shell: powershell
+        run: |
+          Get-ChildItem C:\ -Filter my.ini -Recurse -ErrorAction SilentlyContinue
+
+      - name: Find data directory
+        shell: powershell
+        run: |
+          Get-ChildItem "C:\ProgramData\MySQL" -Recurse -ErrorAction SilentlyContinue
+
+      - name: Find mysqld processes
+        shell: powershell
+        run: |
+          Get-Process mysqld -ErrorAction SilentlyContinue
+
+      - name: Show MySQL help
+        shell: powershell
+        run: |
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe" --verbose --help
