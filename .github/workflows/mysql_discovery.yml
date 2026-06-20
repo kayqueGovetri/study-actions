@@ -18,11 +18,6 @@ jobs:
         run: |
           Get-ChildItem "C:\Program Files\MySQL\MySQL Server 8.0\bin"
 
-      - name: Find data directory
-        shell: powershell
-        run: |
-          Get-ChildItem "C:\ProgramData\MySQL" -Recurse -ErrorAction SilentlyContinue
-
       - name: Find mysqld processes
         shell: powershell
         run: |
