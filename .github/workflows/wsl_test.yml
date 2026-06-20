@@ -8,17 +8,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Windows Info
-        run: |
-          docker version
-          wsl --status
-          wsl -l -v
+    - name: Install Ubuntu
+      run: |
+        wsl --install Ubuntu
 
-      - name: Test Ubuntu
-        run: |
-          wsl uname -a
-
-      - name: Check Docker in WSL
-        continue-on-error: true
-        run: |
-          wsl docker version
+    - name: Check distro
+      run: |
+        wsl -l -v
