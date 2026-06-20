@@ -1,4 +1,4 @@
-name: MySQL Server Discovery
+name: Start MySQL
 
 on:
   workflow_dispatch:
@@ -8,22 +8,38 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - name: Find mysqld
+      - name: Create data directory
         shell: powershell
         run: |
-          where.exe mysqld
+          New-Item -ItemType Directory -Force -Path C:\mysql-data
 
-      - name: Inspect MySQL folder
+      - name: Initialize MySQL
         shell: powershell
         run: |
-          Get-ChildItem "C:\Program Files\MySQL\MySQL Server 8.0\bin"
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe" `
+            --initialize-insecure `
+            --datadir=C:\mysql-data
 
-      - name: Find mysqld processes
+      - name: Start MySQL
         shell: powershell
         run: |
-          Get-Process mysqld -ErrorAction SilentlyContinue
+          Start-Process `
+            -FilePath "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe" `
+            -ArgumentList "--datadir=C:\mysql-data","--port=3306"
 
-      - name: Show MySQL help
+      - name: Wait
         shell: powershell
         run: |
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe" --verbose --help
+          Start-Sleep 15
+
+      - name: Verify process
+        shell: powershell
+        run: |
+          Get-Process mysqld
+
+      - name: Test connection
+        shell: powershell
+        run: |
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
+            -u root `
+            -e "SELECT VERSION();"
