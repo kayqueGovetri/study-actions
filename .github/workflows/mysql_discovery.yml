@@ -104,3 +104,33 @@ jobs:
             -proot `
             -e "SELECT VERSION();"
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify TCP connection
+        shell: powershell
+        run: |
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
+            --protocol=TCP `
+            -h 127.0.0.1 `
+            -P 32768 `
+            -u root `
+            -proot `
+            -e "SHOW DATABASES;"
+
+      - name: Run application
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 32768
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_DATABASE: my_db
+        run: |
+          python main.py
