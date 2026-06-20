@@ -1,0 +1,63 @@
+name: Test MySQL on Windows Runner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-mysql:
+    runs-on: windows-2025
+
+    steps:
+      - name: Find MySQL
+        shell: powershell
+        run: |
+          Get-Command mysql -ErrorAction SilentlyContinue
+          where.exe mysql
+
+      - name: List Services
+        shell: powershell
+        run: |
+          Get-Service | Where-Object {
+            $_.DisplayName -match "mysql" -or
+            $_.Name -match "mysql"
+          }
+
+      - name: List Installed Programs
+        shell: powershell
+        run: |
+          Get-ChildItem "C:\Program Files" | Select-Object Name
+          Get-ChildItem "C:\tools" -ErrorAction SilentlyContinue
+
+      - name: MySQL Version
+        shell: powershell
+        continue-on-error: true
+        run: |
+          mysql --version
+
+      - name: Try Start MySQL Service
+        shell: powershell
+        continue-on-error: true
+        run: |
+          Get-Service | Where-Object {
+            $_.DisplayName -match "mysql" -or
+            $_.Name -match "mysql"
+          } | Start-Service
+
+      - name: Wait
+        shell: powershell
+        run: Start-Sleep 10
+
+      - name: Service Status
+        shell: powershell
+        continue-on-error: true
+        run: |
+          Get-Service | Where-Object {
+            $_.DisplayName -match "mysql" -or
+            $_.Name -match "mysql"
+          }
+
+      - name: Test Connection
+        shell: powershell
+        continue-on-error: true
+        run: |
+          mysql -u root -e "SELECT VERSION();"
