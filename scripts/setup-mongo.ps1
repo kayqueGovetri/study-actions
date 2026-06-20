@@ -11,7 +11,8 @@ where.exe mongosh
 Get-Command mongosh
 
 Get-ChildItem "C:\Program Files" -Recurse -Filter mongosh.exe -ErrorAction SilentlyContinue
-$mongosh = "C:\Program Files\MongoDB\Shell\bin\mongosh.exe"
+
+$mongosh = "C:\Program Files\mongosh\mongosh.exe"
 
 & $mongosh --eval "
 use admin
