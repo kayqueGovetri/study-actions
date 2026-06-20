@@ -1,0 +1,24 @@
+name: WSL Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Windows Info
+        run: |
+          docker version
+          wsl --status
+          wsl -l -v
+
+      - name: Test Ubuntu
+        run: |
+          wsl uname -a
+
+      - name: Check Docker in WSL
+        continue-on-error: true
+        run: |
+          wsl docker version
