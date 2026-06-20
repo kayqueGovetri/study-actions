@@ -12,7 +12,7 @@ jobs:
 
       - name: Initialize MongoDB
         shell: powershell
-        run: .\scripts\mongo-setup.ps1
+        run: .\scripts\setup-mongo.ps1
 
       - name: Setup Python
         uses: actions/setup-python@v5
