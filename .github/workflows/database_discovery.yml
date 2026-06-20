@@ -32,7 +32,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run application
+      - name: Run mongo
         env:
           MONGO_HOST: 127.0.0.1
           MONGO_PORT: 27017
@@ -41,3 +41,21 @@ jobs:
           MONGO_AUTH_SOURCE: admin
           MONGO_DATABASE: my_db
         run: python mongo.py
+
+      - name: Run mysql
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 32768
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_DATABASE: my_db
+        run: python main.py
+
+      - name: Run postgres
+        env:
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_PORT: 5433
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: my_db
+        run: python postgres.py

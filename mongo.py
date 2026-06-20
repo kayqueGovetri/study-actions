@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 client = MongoClient(
-    "mongodb://root:root@127.0.0.1:27017/my_db?authSource=admin"
+    "mongodb://127.0.0.1:27017"
 )
 
 db = client["my_db"]
