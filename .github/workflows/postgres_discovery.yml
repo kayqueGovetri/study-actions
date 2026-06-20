@@ -12,11 +12,7 @@ jobs:
 
       - name: Initialize PostgreSQL
         shell: powershell
-        run: .\scripts\postgres-init.ps1
-
-      - name: Verify PostgreSQL
-        shell: powershell
-        run: .\scripts\postgres-verify.ps1
+        run: .\scripts\setup-postgres.ps1
 
       - name: Setup Python
         uses: actions/setup-python@v5
