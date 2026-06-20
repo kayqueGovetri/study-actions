@@ -1,4 +1,4 @@
-name: MongoDB Windows Test
+name: Databases Windows Test
 
 on:
   workflow_dispatch:
