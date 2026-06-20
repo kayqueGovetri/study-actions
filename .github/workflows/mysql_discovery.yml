@@ -16,7 +16,7 @@ jobs:
           mysql_root_password: 'root'
           mysql_database: 'my_db'
           mysql_user: 'root'
-          mysql_user_password: 'root'
+          mysql_password: 'root'
           mysql_port: 32768
 
 
