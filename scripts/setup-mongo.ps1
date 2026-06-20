@@ -1,3 +1,4 @@
+
 $service = "MongoDB"
 
 Set-Service -Name $service -StartupType Manual
@@ -5,6 +6,11 @@ Start-Service -Name $service
 
 Start-Sleep 10
 
+where.exe mongosh
+
+Get-Command mongosh
+
+Get-ChildItem "C:\Program Files" -Recurse -Filter mongosh.exe -ErrorAction SilentlyContinue
 $mongosh = "C:\Program Files\MongoDB\Shell\bin\mongosh.exe"
 
 & $mongosh --eval "
