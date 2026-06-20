@@ -1,4 +1,5 @@
-name: Start MySQL
+```yaml
+name: MySQL Windows Test
 
 on:
   workflow_dispatch:
@@ -8,7 +9,9 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - name: Create data directory
+      - uses: actions/checkout@v4
+
+      - name: Create MySQL data directory
         shell: powershell
         run: |
           New-Item -ItemType Directory -Force -Path C:\mysql-data
@@ -25,21 +28,65 @@ jobs:
         run: |
           Start-Process `
             -FilePath "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe" `
-            -ArgumentList "--datadir=C:\mysql-data","--port=3306"
+            -ArgumentList `
+            "--datadir=C:\mysql-data",
+            "--port=32768",
+            "--bind-address=0.0.0.0"
 
-      - name: Wait
+      - name: Wait for MySQL
         shell: powershell
         run: |
-          Start-Sleep 15
+          Start-Sleep 20
 
-      - name: Verify process
-        shell: powershell
-        run: |
-          Get-Process mysqld
-
-      - name: Test connection
+      - name: Configure root user
         shell: powershell
         run: |
           & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
             -u root `
+            -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
+
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
+            -u root `
+            -proot `
+            -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'root';"
+
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
+            -u root `
+            -proot `
+            -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
+
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
+            -u root `
+            -proot `
+            -e "FLUSH PRIVILEGES;"
+
+      - name: Create database
+        shell: powershell
+        run: |
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
+            -u root `
+            -proot `
+            -e "CREATE DATABASE IF NOT EXISTS my_db;"
+
+      - name: Verify TCP connection
+        shell: powershell
+        run: |
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
+            --protocol=TCP `
+            -h 127.0.0.1 `
+            -P 32768 `
+            -u root `
+            -proot `
+            -e "SHOW DATABASES;"
+
+      - name: Show MySQL version
+        shell: powershell
+        run: |
+          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
+            --protocol=TCP `
+            -h 127.0.0.1 `
+            -P 32768 `
+            -u root `
+            -proot `
             -e "SELECT VERSION();"
+
