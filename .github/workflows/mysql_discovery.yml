@@ -10,9 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Initialize MySQL
-        shell: powershell
-        run: .\scripts\setup-mysql.ps1
+      - name: Setup MySQL
+        uses: kayqueGovetri/setup-mysql@fix/entrypoint-ps1
+        with:
+          mysql_root_password: 'root'
+          mysql_database: 'my_db'
+          mysql_user: 'root'
+          mysql_user_password: 'root'
+          mysql_port: 32768
+
 
       - name: Setup Python
         uses: actions/setup-python@v5
