@@ -15,8 +15,8 @@ jobs:
         with:
           mysql_root_password: 'root'
           mysql_database: 'my_db'
-          mysql_user: 'root'
-          mysql_password: 'root'
+          mysql_user: 'teste'
+          mysql_password: '123'
           mysql_port: 32768
 
 
@@ -34,7 +34,7 @@ jobs:
         env:
           MYSQL_HOST: 127.0.0.1
           MYSQL_PORT: 32768
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
+          MYSQL_USER: teste
+          MYSQL_PASSWORD: 123
           MYSQL_DATABASE: my_db
         run: python main.py

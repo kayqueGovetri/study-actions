@@ -5,8 +5,8 @@ def main() -> None:
     connection = mysql.connector.connect(
         host="127.0.0.1",
         port=32768,
-        user="root",
-        password="root",
+        user="teste",
+        password="123",
         database="my_db",
     )
 
