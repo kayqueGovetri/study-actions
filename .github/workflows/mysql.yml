@@ -61,3 +61,15 @@ jobs:
         continue-on-error: true
         run: |
           mysql -u root -e "SELECT VERSION();"
+
+      - name: Locate mysqld
+        run: |
+          where.exe mysqld
+
+      - name: Locate mongod
+        run: |
+          where.exe mongod
+
+      - name: Locate postgres
+        run: |
+          where.exe postgres
