@@ -6,12 +6,6 @@ Start-Service -Name $service
 
 Start-Sleep 10
 
-where.exe mongosh
-
-Get-Command mongosh
-
-Get-ChildItem "C:\Program Files" -Recurse -Filter mongosh.exe -ErrorAction SilentlyContinue
-
 $mongosh = "C:\Program Files\mongosh\mongosh.exe"
 
 & $mongosh --eval "
@@ -30,8 +24,6 @@ db.createUser({
 use my_db
 db.createCollection('healthcheck')
 "
-
-$mongosh = "C:\Program Files\MongoDB\Shell\bin\mongosh.exe"
 
 & $mongosh `
   -u root `
