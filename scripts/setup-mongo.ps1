@@ -5,6 +5,8 @@ Set-Service -Name $service -StartupType Manual
 Start-Service -Name $service
 
 Start-Sleep 10
+Get-Service -Name $service
+
 
 $mongosh = "C:\Program Files\mongosh\mongosh.exe"
 
@@ -19,17 +21,3 @@ db.createUser({
   ]
 })
 "
-
-& $mongosh -u root -p root --authenticationDatabase admin --eval "
-use my_db
-db.createCollection('healthcheck')
-"
-
-& $mongosh `
-  -u root `
-  -p root `
-  --authenticationDatabase admin `
-  --eval "
-    use my_db;
-    db.runCommand({ ping: 1 });
-  "
