@@ -18,11 +18,6 @@ jobs:
         run: |
           Get-ChildItem "C:\Program Files\MySQL\MySQL Server 8.0\bin"
 
-      - name: Find my.ini
-        shell: powershell
-        run: |
-          Get-ChildItem C:\ -Filter my.ini -Recurse -ErrorAction SilentlyContinue
-
       - name: Find data directory
         shell: powershell
         run: |
