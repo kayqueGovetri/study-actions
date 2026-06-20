@@ -10,99 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create MySQL data directory
-        shell: powershell
-        run: |
-          New-Item -ItemType Directory -Force -Path C:\mysql-data
-
       - name: Initialize MySQL
         shell: powershell
-        run: |
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe" `
-            --initialize-insecure `
-            --datadir=C:\mysql-data
-
-      - name: Start MySQL
-        shell: powershell
-        run: |
-          Start-Process `
-            -FilePath "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld.exe" `
-            -ArgumentList `
-            "--datadir=C:\mysql-data",
-            "--port=32768",
-            "--bind-address=0.0.0.0"
-
-      - name: Wait for MySQL
-        shell: powershell
-        run: |
-          Start-Sleep 20
-
-      - name: Configure root user
-        shell: powershell
-        run: |
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
-            --protocol=TCP `
-            -h 127.0.0.1 `
-            -P 32768 `
-            -u root `
-            -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"
-
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
-            --protocol=TCP `
-            -h 127.0.0.1 `
-            -P 32768 `
-            -u root `
-            -proot `
-            -e "CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'root';"
-
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
-            --protocol=TCP `
-            -h 127.0.0.1 `
-            -P 32768 `
-            -u root `
-            -proot `
-            -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
-
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
-            --protocol=TCP `
-            -h 127.0.0.1 `
-            -P 32768 `
-            -u root `
-            -proot `
-            -e "FLUSH PRIVILEGES;"
-
-      - name: Create database
-        shell: powershell
-        run: |
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
-            --protocol=TCP `
-            -h 127.0.0.1 `
-            -P 32768 `
-            -u root `
-            -proot `
-            -e "CREATE DATABASE IF NOT EXISTS my_db;"
-
-      - name: Verify TCP connection
-        shell: powershell
-        run: |
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
-            --protocol=TCP `
-            -h 127.0.0.1 `
-            -P 32768 `
-            -u root `
-            -proot `
-            -e "SHOW DATABASES;"
-
-      - name: Show MySQL version
-        shell: powershell
-        run: |
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
-            --protocol=TCP `
-            -h 127.0.0.1 `
-            -P 32768 `
-            -u root `
-            -proot `
-            -e "SELECT VERSION();"
+        run: .\scripts\setup-mysql.ps1
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -114,17 +24,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Verify TCP connection
-        shell: powershell
-        run: |
-          & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" `
-            --protocol=TCP `
-            -h 127.0.0.1 `
-            -P 32768 `
-            -u root `
-            -proot `
-            -e "SHOW DATABASES;"
-
       - name: Run application
         env:
           MYSQL_HOST: 127.0.0.1
@@ -132,5 +31,4 @@ jobs:
           MYSQL_USER: root
           MYSQL_PASSWORD: root
           MYSQL_DATABASE: my_db
-        run: |
-          python main.py
+        run: python main.py
